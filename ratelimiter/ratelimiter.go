@@ -16,7 +16,7 @@ type UserWindow struct {
 	mu sync.Mutex
 }
 
-type silidingWindowLimiter struct {
+type slidingWindowLimiter struct {
 	limit int
 	window time.Duration
 	userWindows map[string]*UserWindow
@@ -24,7 +24,7 @@ type silidingWindowLimiter struct {
 }
 
 func New(limit int, window time.Duration) RateLimiter {
-    return &silidingWindowLimiter{
+    return &slidingWindowLimiter{
 		limit: limit,
 		window: window,
 		userWindows: make(map[string]*UserWindow),
@@ -32,7 +32,7 @@ func New(limit int, window time.Duration) RateLimiter {
 	}
 }
 
-func (rl *silidingWindowLimiter) Allow(id string) bool {
+func (rl *slidingWindowLimiter) Allow(id string) bool {
 	currentTime := time.Now()
 	rl.mu.RLock()
 	userWindow, exist := rl.userWindows[id]
