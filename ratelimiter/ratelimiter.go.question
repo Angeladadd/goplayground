@@ -1,0 +1,23 @@
+package ratelimiter
+
+import "time"
+
+// RateLimiter defines the interface for our rate limiter.
+type RateLimiter interface {
+    // Allow checks if a request for a given ID should be processed.
+    // The ID could represent a user, an IP address, or an API key.
+    // It returns true if the request is within the limit, and false otherwise.
+    Allow(id string) bool
+}
+
+// New creates a new RateLimiter.
+//
+// limit is the maximum number of requests allowed from a single ID.
+// window is the time duration in which the requests are counted.
+// For example, New(100, time.Minute) would create a limiter
+// that allows 100 requests per minute per ID.
+func New(limit int, window time.Duration) RateLimiter {
+    // We'll need to implement the logic to create and return
+    // our rate limiter struct here.
+    return nil // Placeholder
+}
