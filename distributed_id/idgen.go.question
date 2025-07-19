@@ -1,0 +1,8 @@
+package idgen
+
+// IDGenerator defines the interface for our distributed ID generator.
+type IDGenerator interface {
+	// NextID generates and returns a new unique ID.
+	// It should be safe for concurrent use.
+	NextID() (int64, error)
+}
