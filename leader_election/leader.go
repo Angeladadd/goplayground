@@ -2,7 +2,7 @@ package leaderelection
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -59,6 +59,7 @@ type myNode struct {
 	// Context
 	ctx context.Context
 	cancel context.CancelFunc
+	logger *slog.Logger
 }
 
 func NewNode(id string, peers map[string]Node) Node {
@@ -76,6 +77,7 @@ func NewNode(id string, peers map[string]Node) Node {
 		heartbeat: make(chan struct{}),
 		ctx: ctx,
 		cancel: cancel,
+		logger: slog.With("node_id", id),
 	}
 	return node
 }
@@ -118,7 +120,7 @@ func (n *myNode) run() {
 
 		select {
 		case <- n.ctx.Done():
-			fmt.Println("node stopped")
+			n.logger.Info("node stopped")
 			return
 		default:
 			// continue the next round, avoid being blocked
@@ -131,14 +133,14 @@ func (n *myNode) runAsFollower() {
 	electionTimeout := randRaftTimeout()
 	select {
 	case <- n.heartbeat:
-		fmt.Println("[follower] received heartbeat signal")
+		n.logger.Debug("received heartbeat signal", "state", "follower")
 	case <- time.After(electionTimeout):
-		fmt.Println("[follower] election timeout")
+		n.logger.Debug("election timeout", "state", "follower")
 		n.mu.Lock()
 		n.state = Cadidate
 		n.mu.Unlock()
 	case <- n.ctx.Done():
-		fmt.Println("[follower] node stopped")
+		n.logger.Debug("node stopped", "state", "follower")
 	}
 }
 
@@ -193,9 +195,9 @@ func (n *myNode) runAsLeader() {
 		n.broadcastHeartbeat()
 		select {
 		case <- ticker.C:
-			fmt.Println("[leader] heartbeat sent")
+			n.logger.Debug("heartbeat sent", "state", "follower")
 		case <- n.ctx.Done():
-			fmt.Println("[leader] node stopped")
+			n.logger.Debug("node stopped", "state", "follower")
 			return
 		}
 	}
