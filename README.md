@@ -6,3 +6,4 @@ learning and refreshing
 
 - [ratelimiter](https://github.com/Angeladadd/goplayground/tree/main/ratelimiter)
 - [distributed id(snowflake)](https://github.com/Angeladadd/goplayground/tree/main/distributed_id)
+- [leader election(raft)](https://github.com/Angeladadd/goplayground/tree/main/leader_election)

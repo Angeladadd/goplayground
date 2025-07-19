@@ -1,0 +1,42 @@
+package leaderelection
+
+// Node defines the interface for a single participant in the leader election algorithm.
+type Node interface {
+	// Propose is called by other nodes to request a vote in a given term.
+	// The node should grant the vote if the proposal's term is not older
+	// than the term it has already voted for.
+	Propose(term int) (voteGranted bool)
+
+	// Heartbeat is sent by the current leader to maintain its authority.
+	// If a node receives a heartbeat with a term that is older than its current term,
+	// it should be rejected.
+	Heartbeat(term int) (success bool)
+
+	// ID returns the unique identifier of the node.
+	ID() string
+
+	// IsLeader returns true if the node currently believes it is the leader.
+	IsLeader() bool
+
+	// Start initiates the node's participation in the leader election process.
+	// This usually involves starting goroutines for timers and message handling.
+	Start()
+
+	// Stop cleanly shuts down the node.
+	Stop()
+}
+
+// NewNode is a constructor function that creates and returns a new Node.
+// - id is the unique identifier for this node.
+// - peers is a map of all nodes in the cluster, including itself,
+//   which it can use to communicate.
+//
+// You will need to define a struct that implements the Node interface and
+// write this constructor function.
+// For example:
+//
+// type myNode struct { ... }
+//
+// func NewNode(id string, peers map[string]Node) Node {
+//	 return &myNode{ ... }
+// }
