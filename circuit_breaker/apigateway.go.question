@@ -1,0 +1,44 @@
+package circuitbreaker
+
+import (
+	"errors"
+	"sync"
+	"time"
+)
+
+// DownstreamService is a function representing a call to a remote service.
+// It might succeed and return a response, or fail and return an error.
+type DownstreamService func() (string, error)
+
+// APIGateway is the interface for our API gateway with a circuit breaker.
+type APIGateway interface {
+	// Execute attempts to call the downstream service.
+	// It will apply circuit breaker logic to protect the service from overload.
+	Execute(service DownstreamService) (string, error)
+}
+
+// Config holds the configuration for the circuit breaker.
+type Config struct {
+	// FailureThreshold is the number of consecutive failures needed to open the circuit.
+	FailureThreshold int
+	// ResetTimeout is the duration the circuit stays open before transitioning to half-open.
+	ResetTimeout time.Duration
+}
+
+// TODO: Define a struct that implements the APIGateway interface.
+// It should hold the state of the circuit breaker, such as the current state,
+// failure counts, and any necessary timestamps. Remember to consider concurrency!
+//
+// type circuitBreakerGateway struct { ... }
+
+// NewAPIGateway is the constructor that our tests will use.
+// You need to implement this function to return an instance of your gateway.
+func NewAPIGateway(config Config) APIGateway {
+	// TODO: Implement this constructor.
+	// Example:
+	// return &circuitBreakerGateway{
+	// 	config: config,
+	//  ... other initial state
+	// }
+	return nil
+}
