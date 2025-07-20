@@ -12,3 +12,5 @@ learning and refreshing
 - [circuit breaker](https://github.com/Angeladadd/goplayground/tree/main/circuit_breaker)
 
 ### Real-life cases
+
+- [transactional ledger](https://github.com/Angeladadd/goplayground/tree/main/ledger)
