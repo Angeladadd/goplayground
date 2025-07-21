@@ -14,3 +14,4 @@ learning and refreshing
 ### Real-life cases
 
 - [transactional ledger](https://github.com/Angeladadd/goplayground/tree/main/ledger)
+- [crawel](https://github.com/Angeladadd/goplayground/tree/main/crawel)
