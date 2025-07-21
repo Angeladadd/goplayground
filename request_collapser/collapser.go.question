@@ -1,0 +1,16 @@
+// File: collapser.go
+
+package collapser
+
+// Collapser is an interface for a concurrent request collapser.
+// It allows multiple goroutines to request the same resource, but ensures
+// that only one underlying request is made.
+type Collapser interface {
+	// Do executes the given function `fn` for a given key.
+	//
+	// If multiple calls to Do are made with the same key while an initial
+	// call is in flight, the function `fn` will only be executed once.
+	// All callers will receive the same result and error from the single
+	// execution.
+	Do(key string, fn func() (interface{}, error)) (interface{}, error)
+}
