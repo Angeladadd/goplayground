@@ -16,32 +16,38 @@ type Fetcher interface {
 // to a maximum depth. It should use goroutines to fetch pages concurrently.
 func Crawl(url string, depth int, fetcher Fetcher) {
 	queue := []string{url}
+	// TODO: bloom filter to minimize the seen map size
 	seen := map[string]struct{}{url: {}}
 	mu := sync.Mutex{}
+	batchSize := 50
 	for level := 1; level <= depth; level++ {
 		nextqueue := []string{}
-		wg := sync.WaitGroup{}
-		for _, ele := range queue {
-			wg.Add(1)
-			go func(url string) {
-				defer wg.Done()
-				body, urls, err := fetcher.Fetch(url)
-				mu.Lock()
-				defer mu.Unlock()
-				if err != nil {
-					fmt.Printf("failed to fetch %s %v\n", url, err)
-					return
-				} 
-				fmt.Printf("found: %s %q\n", url, body)
-				for _, ele := range urls {
-					if _, ok := seen[ele]; !ok {
-						seen[ele] = struct{}{}
-						nextqueue = append(nextqueue, ele)
+		// batch get url to prevent socket runout
+		batchNum := (len(queue) + batchSize - 1) / batchSize
+		for i:=0;i<batchNum;i++ {
+			wg := sync.WaitGroup{}
+			for _, ele := range queue[i*batchSize: min((i+1)*batchSize, len(queue))] {
+				wg.Add(1)
+				go func(url string) {
+					defer wg.Done()
+					body, urls, err := fetcher.Fetch(url)
+					mu.Lock()
+					defer mu.Unlock()
+					if err != nil {
+						fmt.Printf("failed to fetch %s %v\n", url, err)
+						return
+					} 
+					fmt.Printf("found: %s %q\n", url, body)
+					for _, ele := range urls {
+						if _, ok := seen[ele]; !ok {
+							seen[ele] = struct{}{}
+							nextqueue = append(nextqueue, ele)
+						}
 					}
-				}
-			}(ele)
+				}(ele)
+			}
+			wg.Wait()
 		}
-		wg.Wait()
 		if len(nextqueue) == 0 {
 			break
 		}
