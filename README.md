@@ -17,3 +17,4 @@ learning and refreshing
 - [crawel](https://github.com/Angeladadd/goplayground/tree/main/crawel)
 - [request collapser](https://github.com/Angeladadd/goplayground/tree/main/request_collapser)
 - [graceful shutdown](https://github.com/Angeladadd/goplayground/tree/main/graceful_shutdown)
+- [lfu](https://github.com/Angeladadd/goplayground/tree/main/lfu)
