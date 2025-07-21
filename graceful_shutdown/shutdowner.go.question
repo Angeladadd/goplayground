@@ -1,0 +1,17 @@
+// shutdowner.go
+package shutdown
+
+import "context"
+
+// Shutdowner manages and executes shutdown hooks for a service.
+type Shutdowner interface {
+	// Add adds a function to be executed on shutdown.
+	// These functions are expected to take a context to handle cancellation.
+	Add(hook func(ctx context.Context))
+
+	// Shutdown initiates the graceful shutdown process.
+	// It executes all registered hooks concurrently.
+	// It returns an error if the provided context is cancelled before
+	// all hooks have completed.
+	Shutdown(ctx context.Context) error
+}
