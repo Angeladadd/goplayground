@@ -94,6 +94,7 @@ func (c *lfuCache[K, V]) refresh(node *list.Element) {
 		c.freqToList[entry.freq] = list.New()
 	}
 	c.freqToList[entry.freq].PushBack(entry)
+	c.keyToNode[entry.key] = c.freqToList[entry.freq].Back()
 }
 
 func (c *lfuCache[K, V]) Get(key K) (value V, ok bool) {
